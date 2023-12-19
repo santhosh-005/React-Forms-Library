@@ -1,64 +1,65 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import "./App.css";
+import open from "./assets/open.png";
+import close from "./assets/close.png";
 
 function App() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors },
+    watch,
   } = useForm();
-  console.log(register);
-  console.log(handleSubmit);
-  const [fields, setFields] = useState();
-  const [submit, setSubmit] = useState(false);
 
+  const [submit, setSubmit] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const onSubmit = (data) => {
-    console.log(data.firstname.length);
-    setFields(data);
+    console.log(data);
     setSubmit(true);
-    console.log(register.firstname);
   };
-  console.log(errors);
-  console.log(errors.email);
+
   return (
-    <div>
-      <h1>React Forms Library</h1>
+    <div id="whole-container">
+      <h1 id="heading">React Forms Library</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div id="successBox">
           {submit ? <h2 id="successMsg">Register Successfull</h2> : null}
         </div>
 
-        <input
-          type="text"
-          placeholder="firstname"
-          {...register("firstname", { required: "firstname is required" })}
-        />
+        <div>
+          <input
+            type="text"
+            placeholder="firstname"
+            {...register("firstname", { required: "firstname is required" })}
+          />
 
-        <span>{errors.firstname?.message}</span>
+          <p>{errors.firstname?.message}</p>
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="lastname"
+            {...register("lastname", { required: "lastname is required" })}
+          />
+          <p>{errors.lastname?.message}</p>
+        </div>
+        <div>
+          <input
+            type="text"
+            placeholder="email"
+            {...register("email", {
+              required: "email is required",
+              pattern: {
+                value: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
+                message: "Invalid email",
+              },
+            })}
+          />
 
-        <input
-          type="text"
-          placeholder="lastname"
-          {...register("lastname", { required: "lastname is required" })}
-        />
-        <span>{errors.lastname?.message}</span>
-
-        <input
-          type="text"
-          placeholder="email"
-          {...register("email", {
-            required: "email is required",
-            pattern: {
-              value: /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/,
-              message: "Invalid email",
-            },
-          })}
-        />
-
-        <span>{errors.email?.message}</span>
+          <p>{errors.email?.message}</p>
+        </div>
         <div>
           <input
             type={visible ? "text" : "password"}
@@ -76,15 +77,14 @@ function App() {
               },
             })}
           />
-
-          <span onClick={() => setVisible(!visible)}>eye</span>
-          
+          <img id="eye" src={visible ? open : close}  onClick={() => setVisible(!visible)} alt="" />
+          <p>{errors.password?.message}</p>
         </div>
-        <span>{errors.password?.message}</span>
-        <button type="submit">Register now</button>
+        <div>
+          <button type="submit">Register now</button>
+        </div>
       </form>
-
-      <div></div>
+      {submit ? <h1>{watch("firstname")}</h1> : null}
     </div>
   );
 }
